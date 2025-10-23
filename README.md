@@ -315,18 +315,6 @@ Este es un proyecto educativo. Las contribuciones son bienvenidas para:
 - Optimizar código
 - Agregar nuevas características
 
-## 📝 Licencia
-
-Este proyecto es de código abierto y está disponible bajo la licencia MIT.
-
-## 👨‍💻 Autor
-
-Proyecto creado como material educativo para la cátedra de desarrollo web.
-
-## 📧 Contacto
-
-Para preguntas o sugerencias sobre este proyecto educativo, por favor contactar al docente de la materia.
-
 ## 🎯 Roadmap
 
 ### Características Futuras
