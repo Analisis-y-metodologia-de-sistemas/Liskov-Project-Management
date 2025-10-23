@@ -158,6 +158,8 @@ python manage.py runserver
 
 ## 👥 Usuarios de Prueba
 
+Correr el script create_davinci_project.py y despues update_passwords.py
+
 El sistema incluye usuarios de prueba con datos de ejemplo. Todos los usuarios usan la contraseña: **`1234`**
 
 ### Proyecto: Sistema de Gestión de Alumnos - Colegio Da Vinci
