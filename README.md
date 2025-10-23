@@ -156,6 +156,53 @@ python manage.py runserver
 - Aplicación: http://127.0.0.1:8000/
 - Admin: http://127.0.0.1:8000/admin/
 
+## 👥 Usuarios de Prueba
+
+El sistema incluye usuarios de prueba con datos de ejemplo. Todos los usuarios usan la contraseña: **`1234`**
+
+### Proyecto: Sistema de Gestión de Alumnos - Colegio Da Vinci
+
+| Username | Nombre Completo | Rol | Contraseña |
+|----------|----------------|-----|------------|
+| `laura.director` | Laura Fernández | Product Owner (Directora) | `1234` |
+| `martin.tech` | Martín González | Scrum Master (Tech Lead) | `1234` |
+| `sofia.dev` | Sofía Romero | Desarrolladora | `1234` |
+| `pablo.frontend` | Pablo Mendoza | Desarrollador Frontend | `1234` |
+| `julia.backend` | Julia Torres | Desarrolladora Backend | `1234` |
+| `diego.qa` | Diego Acosta | QA Tester | `1234` |
+
+### Otros Proyectos de Ejemplo
+
+| Username | Nombre Completo | Contraseña |
+|----------|----------------|------------|
+| `maria.garcia` | Maria Garcia | `1234` |
+| `juan.lopez` | Juan Lopez | `1234` |
+| `ana.martinez` | Ana Martinez | `1234` |
+| `carlos.rodriguez` | Carlos Rodriguez | `1234` |
+| `lucia.fernandez` | Lucia Fernandez | `1234` |
+| `diego.sanchez` | Diego Sanchez | `1234` |
+
+### 📝 Datos de Ejemplo Incluidos
+
+El proyecto incluye un ejemplo completo del **Sistema de Gestión de Alumnos para el Colegio Da Vinci** que demuestra:
+
+- **4 Sprints** (2 completados, 1 activo, 1 planificado)
+- **17 Historias de Usuario** distribuidas en diferentes estados
+- **43 Tareas** con estimaciones y seguimiento de horas
+- **28 Comentarios** de colaboración entre el equipo
+
+#### Características del Proyecto Da Vinci
+
+El proyecto de ejemplo implementa un sistema integral que incluye:
+- Gestión completa de datos de alumnos
+- Registro de asistencias con reportes automáticos
+- Sistema de calificaciones y evaluaciones
+- Portal de padres para seguimiento académico
+- Dashboard con estadísticas
+- Sistema de notificaciones
+
+Para explorar este proyecto, inicia sesión con cualquiera de los usuarios del equipo Da Vinci listados arriba.
+
 ## 📦 Dependencias Principales
 
 - **Django 5.2**: Framework web principal

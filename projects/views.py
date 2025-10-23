@@ -22,8 +22,8 @@ def project_list(request):
         Q(product_owner=request.user) |
         Q(scrum_master=request.user)
     ).distinct().annotate(
-        story_count=Count('user_stories'),
-        sprint_count=Count('sprints')
+        story_count=Count('user_stories', distinct=True),
+        sprint_count=Count('sprints', distinct=True)
     )
 
     context = {
