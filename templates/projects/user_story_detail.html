@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ user_story.title }} - Liscov PM{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'project_list' %}">Proyectos</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'project_detail' user_story.project.pk %}">{{ user_story.project.name }}</a></li>
+            <li class="breadcrumb-item active">{{ user_story.title }}</li>
+        </ol>
+    </nav>
+
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <h1>{{ user_story.title }}</h1>
+            <div class="mb-2">
+                <span class="badge bg-{{ user_story.priority }}">{{ user_story.get_priority_display }}</span>
+                <span class="badge bg-secondary">{{ user_story.get_status_display }}</span>
+                {% if user_story.story_points %}
+                <span class="badge bg-info">{{ user_story.story_points }} pts</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'user_story_update' user_story.pk %}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Columna Principal -->
+        <div class="col-md-8">
+            <!-- Descripción -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-file-text"></i> Descripción</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ user_story.description }}</p>
+                </div>
+            </div>
+
+            <!-- Criterios de Aceptación -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-check-circle"></i> Criterios de Aceptación</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ user_story.acceptance_criteria }}</p>
+                </div>
+            </div>
+
+            <!-- Tareas -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-list-check"></i> Tareas</h5>
+                    <a href="{% url 'task_create' user_story.pk %}" class="btn btn-sm btn-primary">
+                        <i class="bi bi-plus"></i> Nueva Tarea
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if tasks %}
+                    <div class="list-group">
+                        {% for task in tasks %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ task.title }}</h6>
+                                    <p class="mb-1 text-muted small">{{ task.description }}</p>
+                                    <small class="text-muted">
+                                        {% if task.estimated_hours %}
+                                        Estimado: {{ task.estimated_hours }}h
+                                        {% endif %}
+                                        {% if task.actual_hours %}
+                                        | Real: {{ task.actual_hours }}h
+                                        {% endif %}
+                                        {% if task.assigned_to %}
+                                        | Asignado: {{ task.assigned_to.username }}
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                <div class="ms-3">
+                                    <span class="badge bg-{{ task.status }}">{{ task.get_status_display }}</span>
+                                    <a href="{% url 'task_update' task.pk %}" class="btn btn-sm btn-outline-primary ms-2">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center py-3">No hay tareas creadas para esta historia.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Comentarios -->
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-chat-dots"></i> Comentarios</h5>
+                </div>
+                <div class="card-body">
+                    {% if comments %}
+                    {% for comment in comments %}
+                    <div class="mb-3 pb-3 border-bottom">
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ comment.author.username }}</strong>
+                            <small class="text-muted">{{ comment.created_at|date:"d/m/Y H:i" }}</small>
+                        </div>
+                        <p class="mt-2 mb-0">{{ comment.content }}</p>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p class="text-muted">No hay comentarios aún.</p>
+                    {% endif %}
+
+                    <hr>
+
+                    <h6>Agregar Comentario</h6>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ comment_form|crispy }}
+                        <button type="submit" class="btn btn-primary mt-2">
+                            <i class="bi bi-send"></i> Enviar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Lateral -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Detalles</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <strong>Proyecto:</strong>
+                        <br>
+                        <a href="{% url 'project_detail' user_story.project.pk %}">
+                            {{ user_story.project.name }}
+                        </a>
+                    </div>
+                    <div class="list-group-item">
+                        <strong>Sprint:</strong>
+                        <br>
+                        {% if user_story.sprint %}
+                        <a href="{% url 'sprint_detail' user_story.sprint.pk %}">
+                            {{ user_story.sprint.name }}
+                        </a>
+                        {% else %}
+                        <span class="text-muted">Product Backlog</span>
+                        {% endif %}
+                    </div>
+                    <div class="list-group-item">
+                        <strong>Asignado a:</strong>
+                        <br>
+                        {{ user_story.assigned_to.username|default:"Sin asignar" }}
+                    </div>
+                    <div class="list-group-item">
+                        <strong>Creado por:</strong>
+                        <br>
+                        {{ user_story.created_by.username }}
+                    </div>
+                    <div class="list-group-item">
+                        <strong>Fecha de creación:</strong>
+                        <br>
+                        {{ user_story.created_at|date:"d/m/Y H:i" }}
+                    </div>
+                    <div class="list-group-item">
+                        <strong>Última actualización:</strong>
+                        <br>
+                        {{ user_story.updated_at|date:"d/m/Y H:i" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

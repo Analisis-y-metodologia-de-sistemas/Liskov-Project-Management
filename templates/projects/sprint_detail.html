@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ sprint.name }} - Liscov PM{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'project_list' %}">Proyectos</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'project_detail' sprint.project.pk %}">{{ sprint.project.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'sprint_list' sprint.project.pk %}">Sprints</a></li>
+            <li class="breadcrumb-item active">{{ sprint.name }}</li>
+        </ol>
+    </nav>
+
+    <h1>{{ sprint.name }}</h1>
+    <p class="lead">{{ sprint.goal }}</p>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <strong>Estado:</strong>
+                    <span class="badge bg-{{ sprint.status }}">{{ sprint.get_status_display }}</span>
+                </div>
+                <div class="col-md-3">
+                    <strong>Número:</strong> Sprint {{ sprint.number }}
+                </div>
+                <div class="col-md-3">
+                    <strong>Fecha Inicio:</strong> {{ sprint.start_date|date:"d/m/Y" }}
+                </div>
+                <div class="col-md-3">
+                    <strong>Fecha Fin:</strong> {{ sprint.end_date|date:"d/m/Y" }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Historias del Sprint</h3>
+    {% if user_stories %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Prioridad</th>
+                    <th>Estado</th>
+                    <th>Puntos</th>
+                    <th>Asignado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for story in user_stories %}
+                <tr>
+                    <td>{{ story.title }}</td>
+                    <td><span class="badge bg-{{ story.priority }}">{{ story.get_priority_display }}</span></td>
+                    <td><span class="badge bg-secondary">{{ story.get_status_display }}</span></td>
+                    <td>{{ story.story_points|default:"-" }}</td>
+                    <td>{{ story.assigned_to.username|default:"Sin asignar" }}</td>
+                    <td>
+                        <a href="{% url 'user_story_detail' story.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        No hay historias asignadas a este sprint.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

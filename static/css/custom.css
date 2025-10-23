@@ -1,0 +1,141 @@
+/* Custom CSS para Liscov Project Management */
+
+/* Variables de colores para prioridades y estados */
+:root {
+    --priority-low: #28a745;
+    --priority-medium: #ffc107;
+    --priority-high: #fd7e14;
+    --priority-critical: #dc3545;
+}
+
+/* Estilos generales */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Badges personalizados por prioridad */
+.badge.bg-LOW {
+    background-color: var(--priority-low) !important;
+}
+
+.badge.bg-MEDIUM {
+    background-color: var(--priority-medium) !important;
+    color: #000 !important;
+}
+
+.badge.bg-HIGH {
+    background-color: var(--priority-high) !important;
+}
+
+.badge.bg-CRITICAL {
+    background-color: var(--priority-critical) !important;
+}
+
+/* Badges para estados de sprint */
+.badge.bg-PLANNED {
+    background-color: #6c757d !important;
+}
+
+.badge.bg-ACTIVE {
+    background-color: #17a2b8 !important;
+}
+
+.badge.bg-COMPLETED {
+    background-color: #28a745 !important;
+}
+
+.badge.bg-CANCELLED {
+    background-color: #dc3545 !important;
+}
+
+/* Badges para estados de tarea */
+.badge.bg-TODO {
+    background-color: #6c757d !important;
+}
+
+.badge.bg-IN_PROGRESS {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+}
+
+.badge.bg-DONE {
+    background-color: #28a745 !important;
+}
+
+/* Cards */
+.card {
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Tables */
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Navbar */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+    background-color: transparent;
+    padding: 0.5rem 0;
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+    box-shadow: 0 -2px 4px rgba(0,0,0,.05);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card, .alert {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .card:hover {
+        transform: none;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    .display-4 {
+        font-size: 2rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .navbar, .btn, footer, .breadcrumb {
+        display: none;
+    }
+}

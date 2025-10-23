@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Liscov PM{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </h1>
+            <p class="lead text-muted">Bienvenido, {{ user.get_full_name|default:user.username }}</p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'project_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nuevo Proyecto
+            </a>
+        </div>
+    </div>
+
+    <!-- Resumen de Proyectos -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-folder"></i> Mis Proyectos
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if user_projects %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Proyecto</th>
+                                    <th>Estado</th>
+                                    <th>Rol</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for project in user_projects %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ project.name }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ project.get_status_display }}</span>
+                                    </td>
+                                    <td>
+                                        {% if project.product_owner == user %}
+                                        <span class="badge bg-success">Product Owner</span>
+                                        {% elif project.scrum_master == user %}
+                                        <span class="badge bg-warning">Scrum Master</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">Equipo</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ project.start_date|date:"d/m/Y" }}</td>
+                                    <td>
+                                        <a href="{% url 'project_detail' project.pk %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> Ver
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-end">
+                        <a href="{% url 'project_list' %}" class="btn btn-link">
+                            Ver todos los proyectos <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-folder-x display-1 text-muted"></i>
+                        <p class="text-muted mt-3">No tienes proyectos asignados aún.</p>
+                        <a href="{% url 'project_create' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Crear Primer Proyecto
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historias y Tareas Asignadas -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-card-checklist"></i> Historias Asignadas
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if assigned_stories %}
+                    <ul class="list-group list-group-flush">
+                        {% for story in assigned_stories %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong>{{ story.title }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ story.project.name }}</small>
+                                </div>
+                                <span class="badge bg-{{ story.priority }}">{{ story.get_priority_display }}</span>
+                            </div>
+                            <div class="mt-2">
+                                <a href="{% url 'user_story_detail' story.pk %}" class="btn btn-sm btn-outline-success">
+                                    Ver detalle
+                                </a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted text-center py-3">No tienes historias asignadas.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list-check"></i> Tareas Asignadas
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if assigned_tasks %}
+                    <ul class="list-group list-group-flush">
+                        {% for task in assigned_tasks %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong>{{ task.title }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ task.user_story.title }}</small>
+                                </div>
+                                <span class="badge bg-secondary">{{ task.get_status_display }}</span>
+                            </div>
+                            <div class="mt-2">
+                                <a href="{% url 'user_story_detail' task.user_story.pk %}" class="btn btn-sm btn-outline-warning">
+                                    Ver historia
+                                </a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted text-center py-3">No tienes tareas asignadas.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Proyectos - Liscov PM{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>
+                <i class="bi bi-folder"></i> Proyectos
+            </h1>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'project_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nuevo Proyecto
+            </a>
+        </div>
+    </div>
+
+    {% if projects %}
+    <div class="row">
+        {% for project in projects %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ project.name }}</h5>
+                    <p class="card-text text-muted">
+                        {{ project.description|truncatewords:20 }}
+                    </p>
+
+                    <div class="mb-2">
+                        <span class="badge bg-info">{{ project.get_status_display }}</span>
+                    </div>
+
+                    <hr>
+
+                    <div class="row text-center mb-2">
+                        <div class="col-6">
+                            <small class="text-muted">Sprints</small>
+                            <h4>{{ project.sprint_count }}</h4>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Historias</small>
+                            <h4>{{ project.story_count }}</h4>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <p class="mb-1">
+                        <small class="text-muted">
+                            <i class="bi bi-person-badge"></i> PO: {{ project.product_owner.username }}
+                        </small>
+                    </p>
+                    <p class="mb-1">
+                        <small class="text-muted">
+                            <i class="bi bi-person-check"></i> SM: {{ project.scrum_master.username }}
+                        </small>
+                    </p>
+                    <p class="mb-1">
+                        <small class="text-muted">
+                            <i class="bi bi-calendar-date"></i> Inicio: {{ project.start_date|date:"d/m/Y" }}
+                        </small>
+                    </p>
+                </div>
+                <div class="card-footer bg-white">
+                    <a href="{% url 'project_detail' project.pk %}" class="btn btn-sm btn-primary w-100">
+                        <i class="bi bi-eye"></i> Ver Proyecto
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        <i class="bi bi-info-circle"></i> No hay proyectos disponibles.
+        <a href="{% url 'project_create' %}" class="alert-link">Crea uno nuevo</a>.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

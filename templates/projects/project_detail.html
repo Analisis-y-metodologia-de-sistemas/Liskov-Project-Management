@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ project.name }} - Liscov PM{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header del Proyecto -->
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'project_list' %}">Proyectos</a></li>
+                    <li class="breadcrumb-item active">{{ project.name }}</li>
+                </ol>
+            </nav>
+            <h1>{{ project.name }}</h1>
+            <p class="lead">{{ project.description }}</p>
+        </div>
+        <div class="col-auto">
+            {% if user == project.product_owner or user == project.scrum_master %}
+            <a href="{% url 'project_update' project.pk %}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Info del Proyecto -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Información del Proyecto</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <strong>Estado:</strong>
+                            <span class="badge bg-info ms-2">{{ project.get_status_display }}</span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>Fecha de Inicio:</strong> {{ project.start_date|date:"d/m/Y" }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>Product Owner:</strong> {{ project.product_owner.get_full_name|default:project.product_owner.username }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>Scrum Master:</strong> {{ project.scrum_master.get_full_name|default:project.scrum_master.username }}
+                        </div>
+                    </div>
+                    <hr>
+                    <strong>Equipo:</strong>
+                    <div class="mt-2">
+                        {% for member in project.team_members.all %}
+                        <span class="badge bg-secondary me-1">{{ member.username }}</span>
+                        {% empty %}
+                        <span class="text-muted">Sin miembros asignados</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-speedometer"></i> Acciones Rápidas</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'sprint_list' project.pk %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-arrow-repeat"></i> Ver Sprints
+                    </a>
+                    <a href="{% url 'sprint_create' project.pk %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-plus-circle"></i> Crear Sprint
+                    </a>
+                    <a href="{% url 'user_story_list' project.pk %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-card-list"></i> Ver Product Backlog
+                    </a>
+                    <a href="{% url 'user_story_create' project.pk %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-plus-square"></i> Crear Historia
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sprints Recientes -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-arrow-repeat"></i> Sprints Recientes</h5>
+                    <a href="{% url 'sprint_list' project.pk %}" class="btn btn-sm btn-light">Ver todos</a>
+                </div>
+                <div class="card-body">
+                    {% if sprints %}
+                    <div class="list-group">
+                        {% for sprint in sprints %}
+                        <a href="{% url 'sprint_detail' sprint.pk %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ sprint.name }}</h6>
+                                <span class="badge bg-{{ sprint.status }}">{{ sprint.get_status_display }}</span>
+                            </div>
+                            <p class="mb-1 text-muted small">{{ sprint.goal|truncatewords:15 }}</p>
+                            <small class="text-muted">
+                                {{ sprint.start_date|date:"d/m/Y" }} - {{ sprint.end_date|date:"d/m/Y" }}
+                            </small>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center py-3">No hay sprints creados aún.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historias de Usuario Recientes -->
+    <div class="row">
+        <div class="col">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-card-checklist"></i> Historias de Usuario Recientes</h5>
+                    <a href="{% url 'user_story_list' project.pk %}" class="btn btn-sm btn-light">Ver todas</a>
+                </div>
+                <div class="card-body">
+                    {% if user_stories %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Título</th>
+                                    <th>Prioridad</th>
+                                    <th>Estado</th>
+                                    <th>Puntos</th>
+                                    <th>Asignado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for story in user_stories %}
+                                <tr>
+                                    <td><a href="{% url 'user_story_detail' story.pk %}">{{ story.title }}</a></td>
+                                    <td><span class="badge bg-{{ story.priority }}">{{ story.get_priority_display }}</span></td>
+                                    <td><span class="badge bg-secondary">{{ story.get_status_display }}</span></td>
+                                    <td>{{ story.story_points|default:"-" }}</td>
+                                    <td>{{ story.assigned_to.username|default:"Sin asignar" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center py-3">No hay historias de usuario creadas aún.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Sprints - {{ project.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'project_list' %}">Proyectos</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'project_detail' project.pk %}">{{ project.name }}</a></li>
+            <li class="breadcrumb-item active">Sprints</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h1><i class="bi bi-arrow-repeat"></i> Sprints</h1>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'sprint_create' project.pk %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nuevo Sprint
+            </a>
+        </div>
+    </div>
+
+    {% if sprints %}
+    <div class="row">
+        {% for sprint in sprints %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">{{ sprint.name }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ sprint.goal }}</p>
+                    <p class="mb-1"><strong>Estado:</strong> <span class="badge bg-{{ sprint.status }}">{{ sprint.get_status_display }}</span></p>
+                    <p class="mb-1"><strong>Período:</strong> {{ sprint.start_date|date:"d/m/Y" }} - {{ sprint.end_date|date:"d/m/Y" }}</p>
+                    {% if sprint.velocity %}
+                    <p class="mb-1"><strong>Velocidad:</strong> {{ sprint.velocity }} puntos</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'sprint_detail' sprint.pk %}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye"></i> Ver Detalle
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        No hay sprints creados. <a href="{% url 'sprint_create' project.pk %}" class="alert-link">Crea uno nuevo</a>.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

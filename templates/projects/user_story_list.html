@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Product Backlog - {{ project.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'project_list' %}">Proyectos</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'project_detail' project.pk %}">{{ project.name }}</a></li>
+            <li class="breadcrumb-item active">Product Backlog</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h1><i class="bi bi-card-checklist"></i> Product Backlog</h1>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'user_story_create' project.pk %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nueva Historia
+            </a>
+        </div>
+    </div>
+
+    {% if user_stories %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Prioridad</th>
+                    <th>Estado</th>
+                    <th>Sprint</th>
+                    <th>Puntos</th>
+                    <th>Asignado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for story in user_stories %}
+                <tr>
+                    <td><a href="{% url 'user_story_detail' story.pk %}">{{ story.title }}</a></td>
+                    <td><span class="badge bg-{{ story.priority }}">{{ story.get_priority_display }}</span></td>
+                    <td><span class="badge bg-secondary">{{ story.get_status_display }}</span></td>
+                    <td>
+                        {% if story.sprint %}
+                        <a href="{% url 'sprint_detail' story.sprint.pk %}">{{ story.sprint.name }}</a>
+                        {% else %}
+                        <span class="text-muted">Backlog</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ story.story_points|default:"-" }}</td>
+                    <td>{{ story.assigned_to.username|default:"Sin asignar" }}</td>
+                    <td>
+                        <a href="{% url 'user_story_detail' story.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="{% url 'user_story_update' story.pk %}" class="btn btn-sm btn-outline-warning">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        No hay historias de usuario. <a href="{% url 'user_story_create' project.pk %}" class="alert-link">Crea una nueva</a>.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
